@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+button {
+  -webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+
+#progress {
+  width: 100%;
+}
+
+#front, #back {
+  height: 100%;
+}
+
+#bar {
+  @apply h-2 bg-primary rounded-r;
+  width: 25%;
+}
