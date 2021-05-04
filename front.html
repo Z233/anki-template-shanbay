@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div class="flex flex-col items-center" id="front">
+    <div class="w-full border-b-2 border-gray-200 flex justify-around text-center p-3">
+      <div>
+        <div class="text-gray-400">待学习</div>
+        <div class="text-gray-600" id="newCardCount"></div>
+      </div>
+      <div>
+        <div class="text-gray-400">待复习</div>
+        <div class="text-gray-600" id="learnCardCount"></div>
+      </div>
+      <div>
+        <div class="text-gray-400">剩余时间</div>
+        <div class="text-gray-600" id="ETA"></div>
+      </div>
+    </div>
+    <div class="flex-grow flex flex-col justify-between pt-28 relative w-full">
+      <div class="space-y-16">
+        <div class="text-5xl text-center">{{单词}}</div>
+        <div class="flex items-center justify-center space-x-2">
+          <span class="h-6 w-6 inline-block"><svg t="1619666380809" class="icon w-full h-full" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3887"><path d="M572.416 225.28c23.552 99.328 35.84 199.68 35.84 299.008 0 98.304-11.264 194.56-34.816 285.696-2.048 7.168-5.12 13.312-9.216 18.432-8.192 11.264-20.48 17.408-33.792 19.456h-6.144c-11.264 0-22.528-4.096-30.72-10.24L335.872 717.824c-2.048-1.024-4.096-2.048-6.144-2.048h-112.64c-18.432 0-34.816-10.24-44.032-25.6C146.432 645.12 133.12 588.8 133.12 525.312c0-64.512 13.312-123.904 39.936-177.152 8.192-17.408 26.624-28.672 46.08-28.672h111.616c2.048 0 4.096-1.024 6.144-2.048L491.52 196.608c6.144-4.096 12.288-7.168 19.456-9.216 13.312-3.072 26.624-1.024 38.912 6.144 11.264 7.168 19.456 18.432 22.528 31.744z m292.864 69.632c-2.048-11.264-12.288-18.432-23.552-16.384-11.264 2.048-18.432 12.288-16.384 23.552 13.312 73.728 20.48 148.48 20.48 222.208s-7.168 146.432-20.48 216.064c-2.048 11.264 5.12 21.504 16.384 23.552h4.096c9.216 0 18.432-7.168 20.48-16.384 14.336-71.68 20.48-147.456 20.48-223.232-1.024-75.776-8.192-152.576-21.504-229.376z m-119.808 59.392c-11.264 1.024-19.456 11.264-17.408 22.528 6.144 49.152 9.216 99.328 9.216 148.48s-3.072 98.304-9.216 145.408c-1.024 11.264 6.144 21.504 17.408 22.528h3.072c10.24 0 19.456-7.168 20.48-18.432 6.144-49.152 9.216-99.328 9.216-150.528s-3.072-102.4-9.216-152.576c-2.048-11.264-12.288-19.456-23.552-17.408z" p-id="3888" fill="#20b6f2"></path></svg></span>
+          <span class="text-gray-400">{{音标}}</span>
+        </div>
+        <div class="px-4" id="sentenceHint" style="visibility: hidden;">
+          <div v class="flex space-x-3 bg-gray-100 p-4 rounded-md">
+            <div class="whitespace-nowrap">
+              <span class="bg-white py-1 px-3 rounded-full text-sm text-gray-400">例句</span>
+            </div>
+            <div class="relative bottom-1 flex-grow"><p class="leading-7">{{例句英文}}</p></div>
+            <div><svg t="1619666380809" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3887" width="24"><path d="M572.416 225.28c23.552 99.328 35.84 199.68 35.84 299.008 0 98.304-11.264 194.56-34.816 285.696-2.048 7.168-5.12 13.312-9.216 18.432-8.192 11.264-20.48 17.408-33.792 19.456h-6.144c-11.264 0-22.528-4.096-30.72-10.24L335.872 717.824c-2.048-1.024-4.096-2.048-6.144-2.048h-112.64c-18.432 0-34.816-10.24-44.032-25.6C146.432 645.12 133.12 588.8 133.12 525.312c0-64.512 13.312-123.904 39.936-177.152 8.192-17.408 26.624-28.672 46.08-28.672h111.616c2.048 0 4.096-1.024 6.144-2.048L491.52 196.608c6.144-4.096 12.288-7.168 19.456-9.216 13.312-3.072 26.624-1.024 38.912 6.144 11.264 7.168 19.456 18.432 22.528 31.744z m292.864 69.632c-2.048-11.264-12.288-18.432-23.552-16.384-11.264 2.048-18.432 12.288-16.384 23.552 13.312 73.728 20.48 148.48 20.48 222.208s-7.168 146.432-20.48 216.064c-2.048 11.264 5.12 21.504 16.384 23.552h4.096c9.216 0 18.432-7.168 20.48-16.384 14.336-71.68 20.48-147.456 20.48-223.232-1.024-75.776-8.192-152.576-21.504-229.376z m-119.808 59.392c-11.264 1.024-19.456 11.264-17.408 22.528 6.144 49.152 9.216 99.328 9.216 148.48s-3.072 98.304-9.216 145.408c-1.024 11.264 6.144 21.504 17.408 22.528h3.072c10.24 0 19.456-7.168 20.48-18.432 6.144-49.152 9.216-99.328 9.216-150.528s-3.072-102.4-9.216-152.576c-2.048-11.264-12.288-19.456-23.552-17.408z" p-id="3888" fill="#20b6f2"></path></svg></div>
+          </div>
+        </div>
+      </div>
+      <div class="w-full px-12 pb-2">
+        <div class="flex flex-col space-y-3" id="buttonGroup1">
+          <button data-status="3" class="answerButton bg-primary text-white p-3 rounded-full focus:outline-none select-none focus:ring-2">我认识</button>
+          <button id="showHintButton" class="bg-secondly text-white p-3 rounded-full focus:outline-none select-none focus:ring-2">提示一下</button>
+        </div>
+        <div class="flex flex-col space-y-3" id="buttonGroup2" style="display: none;">
+          <button data-status="2" class="answerButton bg-primary text-white p-3 rounded-full focus:outline-none select-none focus:ring-2">想起来了</button>
+          <button data-status="1" class="answerButton bg-secondly text-white p-3 rounded-full focus:outline-none select-none focus:ring-2">没想起来</button>
+        </div>
+      </div>
+      <div data-status="4" class="answerButton bg-gray-100 absolute right-0 top-6 flex p-2 rounded-l-full text-gray-300 text-sm">
+        <span><svg t="1620033709442" class="icon fill-current h-5" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4549"><path d="M735.573333 354.901333a83.456 83.456 0 0 1 73.301334 77.44c7.808 132.010667-9.898667 264.32-53.248 396.842667a84.778667 84.778667 0 0 1-70.570667 57.685333 1262.037333 1262.037333 0 0 1-303.616-0.042666 84.778667 84.778667 0 0 1-70.4-57.429334c-43.690667-132.010667-61.141333-264.362667-53.162667-397.056 2.389333-40.106667 33.706667-72.661333 73.301334-77.44a1676.330667 1676.330667 0 0 1 404.352 0zM533.333333 128c58.88 0 107.861333 30.378667 116.522667 69.930667a1798.4 1798.4 0 0 1 134.186667 13.866666 31.317333 31.317333 0 0 1 26.624 31.061334v28.416a31.146667 31.146667 0 0 1-31.018667 31.232 1409.706667 1409.706667 0 0 0-492.629333 0A31.146667 31.146667 0 0 1 256 271.274667v-28.373334c0-15.530667 11.392-28.970667 26.709333-31.104a1803.093333 1803.093333 0 0 1 134.101334-13.866666C425.472 158.378667 474.453333 128 533.333333 128z m0 36.778667c-28.373333 0-52.608 12.714667-61.610666 30.421333a1746.346667 1746.346667 0 0 1 123.136-0.042667c-8.96-17.664-33.152-30.378667-61.525334-30.378666z" p-id="4550"></path></svg></span>
+        <span>标记为太简单</span>
+      </div>
+    </div>
+  </div>
+  <script>
+    // v0.5.2 - https://github.com/SimonLammer/anki-persistence/blob/62463a7f63e79ce12f7a622a8ca0beb4c1c5d556/script.js
+    if(void 0===window.Persistence){var _persistenceKey="github.com/SimonLammer/anki-persistence/",_defaultKey="_default";if(window.Persistence_sessionStorage=function(){var e=!1;try{"object"==typeof window.sessionStorage&&(e=!0,this.clear=function(){for(var e=0;e<sessionStorage.length;e++){var t=sessionStorage.key(e);0==t.indexOf(_persistenceKey)&&(sessionStorage.removeItem(t),e--)}},this.setItem=function(e,t){void 0==t&&(t=e,e=_defaultKey),sessionStorage.setItem(_persistenceKey+e,JSON.stringify(t))},this.getItem=function(e){return void 0==e&&(e=_defaultKey),JSON.parse(sessionStorage.getItem(_persistenceKey+e))},this.removeItem=function(e){void 0==e&&(e=_defaultKey),sessionStorage.removeItem(_persistenceKey+e)})}catch(e){}this.isAvailable=function(){return e}},window.Persistence_windowKey=function(e){var t=window[e],i=!1;"object"==typeof t&&(i=!0,this.clear=function(){t[_persistenceKey]={}},this.setItem=function(e,i){void 0==i&&(i=e,e=_defaultKey),t[_persistenceKey][e]=i},this.getItem=function(e){return void 0==e&&(e=_defaultKey),t[_persistenceKey][e]||null},this.removeItem=function(e){void 0==e&&(e=_defaultKey),delete t[_persistenceKey][e]},void 0==t[_persistenceKey]&&this.clear()),this.isAvailable=function(){return i}},window.Persistence=new Persistence_sessionStorage,Persistence.isAvailable()||(window.Persistence=new Persistence_windowKey("py")),!Persistence.isAvailable()){var titleStartIndex=window.location.toString().indexOf("title"),titleContentIndex=window.location.toString().indexOf("main",titleStartIndex);titleStartIndex>0&&titleContentIndex>0&&titleContentIndex-titleStartIndex<10&&(window.Persistence=new Persistence_windowKey("qt"))}}
+  </script>
+  <script>
+    const UA = navigator.userAgent;
+    const isMobile = /Android/i.test(UA);
+    const isAndroidWebview = /wv/i.test(UA);
+
+    // Mock Anki API
+    if (!isMobile) {
+      AnkiDroidJS = {
+        init: function() {},
+        ankiGetNewCardCount: () => 20,
+        ankiGetLrnCardCount: () => 100,
+        ankiGetRevCardCount: () => 100,
+        ankiGetETA: () => '29'
+      };
+      function buttonAnswerEase1() { console.log(Persistence.getItem()) };
+      function buttonAnswerEase2() { console.log(Persistence.getItem()) };
+      function buttonAnswerEase3() { console.log(Persistence.getItem()) };
+      function buttonAnswerEase4() { console.log(Persistence.getItem()) };
+      function showAnswer() { window.location = '/back.html' };
+    }
+
+    // Button DOM
+    const showHintButton = document.querySelector('#showHintButton');
+    const buttonGroup1 = document.querySelector('#buttonGroup1');
+    const buttonGroup2 = document.querySelector('#buttonGroup2');
+    const sentenceHint = document.querySelector('#sentenceHint');
+    const answerButtons = document.querySelectorAll('.answerButton');
+    // Count DOM
+    const newCardCount  = document.querySelector('#newCardCount');
+    const learnCardCount  = document.querySelector('#learnCardCount');
+    const ETA  = document.querySelector('#ETA');
+    
+    // Init Ankidroid Javascript API
+    const jsApi = {"version" : "0.0.1", "developer" : "dev@mail.com"};
+          AnkiDroidJS.init(JSON.stringify(jsApi));
+
+    newCardCount.innerText = AnkiDroidJS.ankiGetNewCardCount();
+    learnCardCount.innerText = AnkiDroidJS.ankiGetRevCardCount();
+    ETA.innerText = AnkiDroidJS.ankiGetETA() + 'min';
+
+    for (const button in answerButtons) {
+      if (Object.hasOwnProperty.call(answerButtons, button)) {
+        const element = answerButtons[button];
+        element.addEventListener('click', () => {
+          if (Persistence.isAvailable()) {
+            Persistence.setItem(element.dataset.status);
+            showAnswer();
+          } else {
+            window.alert(`Persistence is not available.`);
+          }
+        });
+      }
+    }
+
+    showHintButton.addEventListener('click', () => {
+      toggleElementDisplay(buttonGroup1);
+      toggleElementDisplay(buttonGroup2);
+      sentenceHint.style.visibility = 'visible';
+    });
+    
+    
+
+    function toggleElementDisplay(e) {
+      const visibility = !e.style.display;
+      if (visibility) e.style.display = 'none';
+      else if (!visibility) e.style.display = '';
+      else console.error('Unknown error.');
+    };
+  </script>
+  <script type="module" src="/main.js"></script>
+</body>
+</html>
