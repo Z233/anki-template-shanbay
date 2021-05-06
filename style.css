@@ -14,10 +14,25 @@ body #qa {
   @apply flex-grow;
 }
 
-button {
+button, .cursor-pointer {
   -webkit-tap-highlight-color:rgba(0,0,0,0);
 }
 
 #front, #back {
   @apply h-full w-full;
+}
+
+/* Animation */
+/* .volume-1 {
+  animation: play 0.4s steps(4, end) 3;
+}
+
+.volume-2 {
+  animation: play 0.4s steps(2, end) 3;
+} */
+
+@keyframes play {
+  0% {
+    visibility: hidden;
+  }
 }
