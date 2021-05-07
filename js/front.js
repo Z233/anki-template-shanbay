@@ -1,9 +1,14 @@
+import './Persistence';
+import '../style.css';
+
+const isDev = import.meta.env.DEV;
+
 const UA = navigator.userAgent;
 const isMobile = /Android/i.test(UA);
 const isAndroidWebview = /wv/i.test(UA);
 
 // Mock Anki API
-if (!isMobile) {
+if (isDev) {
   AnkiDroidJS = {
     init: function() {},
     ankiGetNewCardCount: () => 20,
@@ -55,7 +60,7 @@ for (const button in answerButtons) {
 const pronReplaybutton = document.querySelectorAll('.pronAudioWarp > .replaybutton')[0];
 const pronounceAudio = document.createElement('audio');
 
-if (isMobile) pronounceAudio.src = pronReplaybutton.href.replace('playsound:', '');
+if (!isDev) pronounceAudio.src = pronReplaybutton.href.replace('playsound:', '');
 
 const PRONOUNCE_ANIMATION_TIME = 1.2;
 let audioTimeout = -1;
@@ -74,7 +79,7 @@ function playPronounce() {
 // Init Sentence Audio
 const sentenReplaybutton = document.querySelectorAll('.sentenAudioWarp > .replaybutton')[0];
 const sentenceAudio = document.createElement('audio');
-if (isMobile) sentenceAudio.src = sentenReplaybutton.href.replace('playsound:', '');
+if (!isDev) sentenceAudio.src = sentenReplaybutton.href.replace('playsound:', '');
 const sentenceAudioDuration = sentenceAudio.duration;
 
 const SENTENCE_ANIMATION_TIME = sentenceAudioDuration / 1000;

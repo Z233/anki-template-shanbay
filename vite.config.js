@@ -1,36 +1,31 @@
 const { resolve } = require('path');
-const fs = require('fs');
-import { injectHtml } from 'vite-plugin-html';
 import { defineConfig } from 'vite';
-import inline from 'rollup-plugin-inline-js';
+import { viteSingleFile } from "vite-plugin-singlefile";
+import { injectHtml } from 'vite-plugin-html';
 
 const NODE_ENV = process.env.NODE_ENV;
 
 export default defineConfig({
+  plugins: [
+    viteSingleFile(), 
+    {
+      ...injectHtml({
+        injectData: {
+          head: NODE_ENV === 'production' ? '' :
+          `<meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">`
+        }
+      })
+    }
+  ],
   build: {
+    cssCodeSplit: false,
     rollupOptions: {
       input: {
         front: resolve(__dirname, 'front.html'),
         back: resolve(__dirname, 'back.html'),
-        test: resolve(__dirname, 'test.html'),
-      }
-    },
-    watch: {
-      include: ['js/**']
+      },
+      inlineDynamicImports: true,
     }
-  },
-  plugins: [
-    injectHtml({
-      injectData: {
-        frontScript: readScript('front.js'),
-        backScript: readScript('back.js')
-      }
-    }),
-  ]
+  }
 })
-
-function readScript(filename) {
-  return NODE_ENV === 'production' ? 
-  `<script>${fs.readFileSync(resolve(__dirname + '/js/', filename))}</script>` :
-  `<script src="js/${filename}"></script>`
-}
