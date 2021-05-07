@@ -23,7 +23,7 @@ if (isDev) {
 (function(AnkiDroidJS) {
 
   // Mock Anki API
-  if (!!!AnkiDroidJS) {
+  if (isDev) {
     AnkiDroidJS = {
       mock: function(propertyName, fn) {
         this[propertyName] = fn;
