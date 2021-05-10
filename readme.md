@@ -2,7 +2,7 @@
 一个高仿扇贝单词界面的 Anki 词汇模版，目前只能在 Ankidroid 上使用。
 
 ## 🍽 如何食用
-dict 文件夹下的 front.html 和 back.html 对应模版的正反面，复制全部代码至对应位置即可。
+下载 apkg 目录下的 anki-template-shanbay.apkg 导入 Anki 即可。
 
 ## 🐛 现存问题
 ### 样式
