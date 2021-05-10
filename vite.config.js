@@ -18,7 +18,11 @@ export default defineConfig({
     })
   ],
   build: {
+    target: "esnext",
     cssCodeSplit: false,
+    assetsInlineLimit: 100000000,
+    chunkSizeWarningLimit: 100000000,
+    brotliSize: false,
     rollupOptions: {
       input: {
         front: resolve(__dirname, 'front.html'),
