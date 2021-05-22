@@ -40,6 +40,4 @@
 
 ## 📷 截图预览
 
-<img style="max-width: 33.3333%;" src="./screenshots/Screenshot_2021-05-22-12-05-38-083_com.ichi2.anki.jpg" />
-<img style="max-width: 33.3333%;" src="./screenshots/Screenshot_2021-05-22-12-05-43-793_com.ichi2.anki.jpg" />
-<img style="max-width: 33.3333%;" src="./screenshots/Screenshot_2021-05-22-12-05-49-070_com.ichi2.anki.jpg" />
+![screenshots](./screenshots/screenshots.jpg)
