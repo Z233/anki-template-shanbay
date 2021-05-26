@@ -47,21 +47,8 @@ if (isDev) {
   // Init Ankidroid Javascript API
   AnkiDroidJS.init(JSON.stringify({"version" : "0.0.1", "developer" : "dev@mail.com"}));
 
-  // Button DOM
-  const showHintButton = document.querySelector('#showHintButton');
-  const buttonGroup1 = document.querySelector('#buttonGroup1');
-  const buttonGroup2 = document.querySelector('#buttonGroup2');
-  const sentenceHint = document.querySelector('#sentenceHint');
+  // Answer Button
   const answerButtons = document.querySelectorAll('.answerButton');
-
-  // Count DOM
-  const newCardCount  = document.querySelector('#newCardCount');
-  const learnCardCount  = document.querySelector('#learnCardCount');
-  const ETA  = document.querySelector('#ETA');
-
-  newCardCount.innerText = AnkiDroidJS.ankiGetNewCardCount();
-  learnCardCount.innerText = AnkiDroidJS.ankiGetRevCardCount();
-  ETA.innerText = AnkiDroidJS.ankiGetETA() + 'min';
 
   for (const button in answerButtons) {
     if (Object.hasOwnProperty.call(answerButtons, button)) {
@@ -77,6 +64,28 @@ if (isDev) {
     }
   }
 
+  // Show Hint Button
+  const showHintButton = document.querySelector('#showHintButton');
+  const buttonGroup1 = document.querySelector('#buttonGroup1');
+  const buttonGroup2 = document.querySelector('#buttonGroup2');
+  const sentenceHint = document.querySelector('#sentenceHint');
+
+  showHintButton.onclick = () => {
+    toggleElementDisplay(buttonGroup1);
+    toggleElementDisplay(buttonGroup2);
+    sentenceHint.style.visibility = 'visible';
+    playSentence();
+  };
+
+  // Count
+  const newCardCount  = document.querySelector('#newCardCount');
+  const learnCardCount  = document.querySelector('#learnCardCount');
+  const ETA = document.querySelector('#ETA');
+
+  newCardCount.innerText = AnkiDroidJS.ankiGetNewCardCount();
+  learnCardCount.innerText = AnkiDroidJS.ankiGetRevCardCount();
+  ETA.innerText = AnkiDroidJS.ankiGetETA() + 'min';
+
   // Init Pronounce Audio
   const pronReplaybutton = document.querySelectorAll('.pronAudioWarp > .replaybutton')[0];
   const pronounceAudio = document.createElement('audio');
@@ -84,8 +93,6 @@ if (isDev) {
   pronounceAudio.src = pronReplaybutton.href.replace('playsound:', '');
 
   const PRONOUNCE_ANIMATION_TIME = 1.2;
-
-  if (!isDev) playPronounce();
 
   function playPronounce() {
     // pronReplaybutton.dispatchEvent(new MouseEvent('click'));
@@ -137,13 +144,6 @@ if (isDev) {
 
   const sentenceIcon = document.querySelector('.sentenceIcon');
   sentenceIcon.onclick = () => {
-    playSentence();
-  };
-
-  showHintButton.onclick = () => {
-    toggleElementDisplay(buttonGroup1);
-    toggleElementDisplay(buttonGroup2);
-    sentenceHint.style.visibility = 'visible';
     playSentence();
   };
 
