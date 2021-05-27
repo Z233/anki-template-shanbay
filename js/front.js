@@ -19,7 +19,7 @@ if (isDev) {
   }
 }
 
-(function(AnkiDroidJS) {
+(async function(AnkiDroidJS) {
 
   if (isDev) {
     // Mock Anki API
@@ -57,12 +57,20 @@ if (isDev) {
     this.volume2 = this.icon.querySelector('.volume-2');
     this.animations = [];
     this.start = -1;
+    this.duration = 0;
+  }
+
+  AudioIconAnimation.prototype.setDuration = function(duration) {
+    this.duration = duration;
   }
 
   AudioIconAnimation.prototype.play = function() {
     this.start = Date.now();
     this.volume1.style.animation = `play 0.4s steps(4, end) infinite`;
     this.volume2.style.animation = `play 0.4s steps(2, end) infinite`;
+    setTimeout(() => {
+      this.stop();
+    }, this.duration * 1000);
   }
 
   AudioIconAnimation.prototype.stop = function() {
@@ -88,20 +96,21 @@ if (isDev) {
   const AudioCommand = function(wrap, animation) {
     this.wrap = wrap;
     this.audioElement = null;
+    this.audioButton = null;
     this.animation = animation;
   }
 
   AudioCommand.prototype.init = function() {
-    const replayButton = document.querySelectorAll(this.wrap + ' > .replaybutton')[0];
+    this.audioButton = document.querySelectorAll(this.wrap + ' > .replaybutton')[0];
     this.audioElement = document.createElement('audio');
-    this.audioElement.src = replayButton.href.replace('playsound:', '');
-
-    this.audioElement.addEventListener('playing', () => this.animation.play());
-    this.audioElement.addEventListener('pause', () => this.animation.stop());
+    this.audioElement.preload = 'metadata';
+    this.audioElement.src = this.audioButton.href.replace('playsound:', '');
   }
 
   AudioCommand.prototype.play = function() {
-    this.audioElement.play();
+    if (!isDev) this.audioButton.dispatchEvent(new MouseEvent('click'));
+    if (isDev) this.audioElement.play();
+    this.animation.play();
   }
 
   const setPlayCommand = function(button, command) {
@@ -109,18 +118,29 @@ if (isDev) {
       command.play();
     }
   }
- 
+
+  function getAudioDuration(audioElement) {
+    return new Promise(resolve => {
+      audioElement.addEventListener('loadeddata', () => {
+        resolve(audioElement.duration);
+      });
+    });
+  };
+
   // Pronouce Audio
   const playPronounceButton = document.querySelector('#playPronounceButton');
-  const pronAudioCommand = new AudioCommand('.pronAudioWarp', pronIconAnimation);
-  pronAudioCommand.init();
-  setPlayCommand(playPronounceButton, pronAudioCommand);
+  const pronounceAudio = new AudioCommand('.pronAudioWarp', pronIconAnimation);
+  pronounceAudio.init();
+  setPlayCommand(playPronounceButton, pronounceAudio);
+  pronIconAnimation.setDuration(await getAudioDuration(pronounceAudio.audioElement));
+  pronounceAudio.play();
 
   // Sentence Audio
   const sentenceIcon = document.querySelector('.sentenceIcon');
-  const sentAudioCommand = new AudioCommand('.sentenAudioWarp', sentIconAnimation);
-  sentAudioCommand.init();
-  setPlayCommand(sentenceIcon, sentAudioCommand);
+  const sentenceAudio = new AudioCommand('.sentenAudioWarp', sentIconAnimation);
+  sentenceAudio.init();
+  setPlayCommand(sentenceIcon, sentenceAudio);
+  sentIconAnimation.setDuration(await getAudioDuration(sentenceAudio.audioElement));
 
   // Answer Button
   const answerButtons = document.querySelectorAll('.answerButton');
