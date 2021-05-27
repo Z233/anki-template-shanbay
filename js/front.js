@@ -5,7 +5,7 @@ const isDev = import.meta.env.DEV;
 
 if (isDev) {
   createFakeElement('.pronAudioWarp', 'a', './audio/hello.mp3', 'replaybutton');
-  createFakeElement('.sentenAudioWarp', 'a', './audio/hello.mp3', 'replaybutton');
+  createFakeElement('.sentenAudioWarp', 'a', './audio/sentence.mp3', 'replaybutton');
 
   function createFakeElement(selector, tag, href, ...classes) {
     const wrap = document.querySelector(selector);
@@ -47,6 +47,45 @@ if (isDev) {
   // Init Ankidroid Javascript API
   AnkiDroidJS.init(JSON.stringify({"version" : "0.0.1", "developer" : "dev@mail.com"}));
 
+  const audioContext = new AudioContext();
+
+  const AudioCommand = function(wrap) {
+    this.wrap = wrap;
+    this.audioElement = null;
+  }
+
+  AudioCommand.prototype.init = function() {
+    const replayButton = document.querySelectorAll(this.wrap + ' > .replaybutton')[0];
+    this.audioElement = document.createElement('audio');
+    this.audioElement.src = replayButton.href.replace('playsound:', '');
+
+    const track = audioContext.createMediaElementSource(this.audioElement);
+    const gainNode = audioContext.createGain();
+    track.connect(gainNode).connect(audioContext.destination);
+  }
+
+  AudioCommand.prototype.play = function() {
+    this.audioElement.play();
+  }
+
+  const setPlayCommand = function(button, command) {
+    button.onclick = function() {
+      command.play();
+    }
+  }
+ 
+  // Pronouce Audio
+  const playPronounceButton = document.querySelector('#playPronounceButton');
+  const pronAudioCommand = new AudioCommand('.pronAudioWarp');
+  pronAudioCommand.init();
+  setPlayCommand(playPronounceButton, pronAudioCommand);
+
+  // Sentence Audio
+  const sentenceIcon = document.querySelector('.sentenceIcon');
+  const sentAudioCommand = new AudioCommand('.sentenAudioWarp');
+  sentAudioCommand.init();
+  setPlayCommand(sentenceIcon, sentAudioCommand);
+
   // Answer Button
   const answerButtons = document.querySelectorAll('.answerButton');
 
@@ -74,7 +113,14 @@ if (isDev) {
     toggleElementDisplay(buttonGroup1);
     toggleElementDisplay(buttonGroup2);
     sentenceHint.style.visibility = 'visible';
-    playSentence();
+    sentenceIcon.dispatchEvent(new MouseEvent('click'));
+  };
+
+  function toggleElementDisplay(e) {
+    const visibility = !e.style.display;
+    if (visibility) e.style.display = 'none';
+    else if (!visibility) e.style.display = '';
+    else console.error('Unknown error.');
   };
 
   // Count
@@ -85,72 +131,4 @@ if (isDev) {
   newCardCount.innerText = AnkiDroidJS.ankiGetNewCardCount();
   learnCardCount.innerText = AnkiDroidJS.ankiGetRevCardCount();
   ETA.innerText = AnkiDroidJS.ankiGetETA() + 'min';
-
-  // Init Pronounce Audio
-  const pronReplaybutton = document.querySelectorAll('.pronAudioWarp > .replaybutton')[0];
-  const pronounceAudio = document.createElement('audio');
-
-  pronounceAudio.src = pronReplaybutton.href.replace('playsound:', '');
-
-  const PRONOUNCE_ANIMATION_TIME = 1.2;
-
-  function playPronounce() {
-    // pronReplaybutton.dispatchEvent(new MouseEvent('click'));
-    pronounceAudio.play();
-    // Animation
-    const volume1 = document.querySelectorAll('.pronounceIcon > .volume-1')[0];
-    const volume2 = document.querySelectorAll('.pronounceIcon > .volume-2')[0];
-
-    setAudioAnimation(volume1, volume2, PRONOUNCE_ANIMATION_TIME);
-  };
-
-  // Init Sentence Audio
-  const sentenReplaybutton = document.querySelectorAll('.sentenAudioWarp > .replaybutton')[0];
-  const sentenceAudio = document.createElement('audio');
-  sentenceAudio.src = sentenReplaybutton.href.replace('playsound:', '');
-  const sentenceAudioDuration = sentenceAudio.duration;
-
-  const SENTENCE_ANIMATION_TIME = sentenceAudioDuration / 1000;
-
-  function playSentence() {
-    // sentenReplaybutton.dispatchEvent(new MouseEvent('click'));
-    sentenceAudio.play();
-    // Animation
-    const volume1 = document.querySelectorAll('.sentenceIcon > .volume-1')[0];
-    const volume2 = document.querySelectorAll('.sentenceIcon > .volume-2')[0];
-
-    setAudioAnimation(volume1, volume2, SENTENCE_ANIMATION_TIME);
-  }
-
-  function setAudioAnimation(volume1, volume2, duration) {
-
-    volume1.style.animation = `play 0.4s steps(4, end) ${parseInt(duration / 0.4, 10)}`;
-    volume2.style.animation = `play 0.4s steps(2, end) ${parseInt(duration / 0.4, 10)}`;
-
-    setTimeout(() => {
-      clearAudioAnimation(volume1, volume2);
-    }, duration * 1000);
-  }
-
-  function clearAudioAnimation(volume1, volume2) {
-    volume1.style.animation = '';
-    volume2.style.animation = '';
-  };
-
-  const playPronounceButton = document.querySelector('#playPronounceButton');
-  playPronounceButton.onclick = () => {
-    playPronounce();
-  };
-
-  const sentenceIcon = document.querySelector('.sentenceIcon');
-  sentenceIcon.onclick = () => {
-    playSentence();
-  };
-
-  function toggleElementDisplay(e) {
-    const visibility = !e.style.display;
-    if (visibility) e.style.display = 'none';
-    else if (!visibility) e.style.display = '';
-    else console.error('Unknown error.');
-  };
 })(window.AnkiDroidJS)
