@@ -49,15 +49,73 @@ if (isDev) {
 
   const audioContext = new AudioContext();
 
-  const AudioCommand = function(wrap) {
+  const play = [{
+    visibility: 'hidden',
+    offset: 0,
+  }];
+
+  const PER_DURATION = 500;
+  const MIN_DURATION = 1000;
+
+  const AudioIconAnimation = function(selector) {
+    this.icon = document.querySelector(selector);
+    this.volume1 = this.icon.querySelector('.volume-1');
+    this.volume2 = this.icon.querySelector('.volume-2');
+    this.animations = [];
+    this.start = -1;
+
+    const volume1Keyframe = new KeyframeEffect(this.volume1, play, { easing: 'steps(4, end)', duration: PER_DURATION, iterations: Infinity });
+    const volume2Keyframe = new KeyframeEffect(this.volume2, play, { easing: 'steps(2, end)', duration: PER_DURATION, iterations: Infinity });
+    this.animations.push(new Animation(volume1Keyframe, document.timeline));
+    this.animations.push(new Animation(volume2Keyframe, document.timeline));
+  }
+
+  AudioIconAnimation.prototype.play = function() {
+    if (this.animations.length === 0) {
+      console.error('Animation uninitialized.');
+      return;
+    }
+
+    this.start = Date.now();
+    this.animations.forEach(animation => {
+      animation.play();
+    });
+  }
+
+  AudioIconAnimation.prototype.stop = function() {
+    const now = Date.now();
+    const end = this.start + MIN_DURATION;
+    const stopAnimation = () => {
+      this.animations.forEach(animation => {
+        animation.cancel();
+      });
+      this.start = -1;
+    };
+
+    if (now >= end) stopAnimation();
+    else {
+      setTimeout(() => {
+        stopAnimation();
+      }, end - now );
+    }
+  }
+
+  const pronIconAnimation = new AudioIconAnimation('.pronounceIcon');
+  const sentIconAnimation = new AudioIconAnimation('.sentenceIcon');
+
+  const AudioCommand = function(wrap, animation) {
     this.wrap = wrap;
     this.audioElement = null;
+    this.animation = animation;
   }
 
   AudioCommand.prototype.init = function() {
     const replayButton = document.querySelectorAll(this.wrap + ' > .replaybutton')[0];
     this.audioElement = document.createElement('audio');
     this.audioElement.src = replayButton.href.replace('playsound:', '');
+
+    this.audioElement.addEventListener('playing', () => this.animation.play());
+    this.audioElement.addEventListener('pause', () => this.animation.stop());
 
     const track = audioContext.createMediaElementSource(this.audioElement);
     const gainNode = audioContext.createGain();
@@ -76,13 +134,13 @@ if (isDev) {
  
   // Pronouce Audio
   const playPronounceButton = document.querySelector('#playPronounceButton');
-  const pronAudioCommand = new AudioCommand('.pronAudioWarp');
+  const pronAudioCommand = new AudioCommand('.pronAudioWarp', pronIconAnimation);
   pronAudioCommand.init();
   setPlayCommand(playPronounceButton, pronAudioCommand);
 
   // Sentence Audio
   const sentenceIcon = document.querySelector('.sentenceIcon');
-  const sentAudioCommand = new AudioCommand('.sentenAudioWarp');
+  const sentAudioCommand = new AudioCommand('.sentenAudioWarp', sentIconAnimation);
   sentAudioCommand.init();
   setPlayCommand(sentenceIcon, sentAudioCommand);
 
