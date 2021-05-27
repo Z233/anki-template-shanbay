@@ -13,7 +13,6 @@ if (isDev) {
     ele.classList.add(...classes);
     ele.href = href;
     ele.addEventListener('click', function(e) {
-      console.log('run there');
       window.event.preventDefault();
     });
     wrap.appendChild(ele);
@@ -47,14 +46,9 @@ if (isDev) {
   // Init Ankidroid Javascript API
   AnkiDroidJS.init(JSON.stringify({"version" : "0.0.1", "developer" : "dev@mail.com"}));
 
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
   const audioContext = new AudioContext();
 
-  const play = [{
-    visibility: 'hidden',
-    offset: 0,
-  }];
-
-  const PER_DURATION = 500;
   const MIN_DURATION = 1000;
 
   const AudioIconAnimation = function(selector) {
@@ -63,32 +57,20 @@ if (isDev) {
     this.volume2 = this.icon.querySelector('.volume-2');
     this.animations = [];
     this.start = -1;
-
-    const volume1Keyframe = new KeyframeEffect(this.volume1, play, { easing: 'steps(4, end)', duration: PER_DURATION, iterations: Infinity });
-    const volume2Keyframe = new KeyframeEffect(this.volume2, play, { easing: 'steps(2, end)', duration: PER_DURATION, iterations: Infinity });
-    this.animations.push(new Animation(volume1Keyframe, document.timeline));
-    this.animations.push(new Animation(volume2Keyframe, document.timeline));
   }
 
   AudioIconAnimation.prototype.play = function() {
-    if (this.animations.length === 0) {
-      console.error('Animation uninitialized.');
-      return;
-    }
-
     this.start = Date.now();
-    this.animations.forEach(animation => {
-      animation.play();
-    });
+    this.volume1.style.animation = `play 0.4s steps(4, end) infinite`;
+    this.volume2.style.animation = `play 0.4s steps(2, end) infinite`;
   }
 
   AudioIconAnimation.prototype.stop = function() {
     const now = Date.now();
     const end = this.start + MIN_DURATION;
     const stopAnimation = () => {
-      this.animations.forEach(animation => {
-        animation.cancel();
-      });
+      this.volume1.style.animation = '';
+      this.volume2.style.animation = '';
       this.start = -1;
     };
 
@@ -116,10 +98,6 @@ if (isDev) {
 
     this.audioElement.addEventListener('playing', () => this.animation.play());
     this.audioElement.addEventListener('pause', () => this.animation.stop());
-
-    const track = audioContext.createMediaElementSource(this.audioElement);
-    const gainNode = audioContext.createGain();
-    track.connect(gainNode).connect(audioContext.destination);
   }
 
   AudioCommand.prototype.play = function() {

@@ -21,3 +21,9 @@ button, .cursor-pointer {
 #front, #back {
   @apply h-full w-full;
 }
+
+@keyframes play {
+  0% {
+    visibility: hidden;
+  }
+}
