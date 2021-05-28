@@ -6,6 +6,7 @@ import { injectHtml, minifyHtml } from 'vite-plugin-html';
 const NODE_ENV = process.env.NODE_ENV;
 
 export default defineConfig({
+  root: 'src',
   plugins: [
     viteSingleFile(), 
     minifyHtml(),
@@ -25,10 +26,12 @@ export default defineConfig({
     brotliSize: false,
     rollupOptions: {
       input: {
-        front: resolve(__dirname, 'front.html'),
-        back: resolve(__dirname, 'back.html'),
+        front: resolve(__dirname + '/src', 'front.html'),
+        back: resolve(__dirname + '/src', 'back.html'),
       },
       inlineDynamicImports: true,
-    }
+    },
+    outDir: '../dist',
+    emptyOutDir: true
   }
 })

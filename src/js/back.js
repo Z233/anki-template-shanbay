@@ -7,12 +7,18 @@ const isDev = import.meta.env.DEV;
 if (isDev) mockAnkidroid();
 
 (function (AnkiDroidJS) {
+  const answers = {
+    4: () => buttonAnswerEase4(),
+    3: () => buttonAnswerEase3(),
+    2: () => buttonAnswerEase2(), 
+    1: () => buttonAnswerEase1(), 
+  }
 
-  // Init Ankidroid Javascript API
-  AnkiDroidJS.init(JSON.stringify({
-    "version": "0.0.1",
-    "developer": "dev@mail.com"
-  }));
+  const status = parseInt(Persistence.getItem(), 10);
+  const nextButton = document.querySelector('#nextButton');
+  const wrongButton = document.querySelector('#wrongButton');
+  nextButton.onclick = () => answers[status]();
+  wrongButton.onclick = () => answers[1]();
 
   async function initAudio() {
     const MIN_DURATION = 1000;
@@ -109,51 +115,4 @@ if (isDev) mockAnkidroid();
     sentIconAnimation.setDuration(await getAudioDuration(sentenceAudio.audioElement));
   }
   initAudio();
-
-  // Answer Button
-  const answerButtons = document.querySelectorAll('.answerButton');
-
-  for (const button in answerButtons) {
-    if (Object.hasOwnProperty.call(answerButtons, button)) {
-      const element = answerButtons[button];
-      element.addEventListener('click', () => {
-        if (Persistence.isAvailable()) {
-          Persistence.setItem(element.dataset.status);
-          showAnswer();
-        } else {
-          window.alert(`Persistence is not available.`);
-        }
-      });
-    }
-  }
-
-  // Show Hint Button
-  const showHintButton = document.querySelector('#showHintButton');
-  const buttonGroup1 = document.querySelector('#buttonGroup1');
-  const buttonGroup2 = document.querySelector('#buttonGroup2');
-  const sentenceHint = document.querySelector('#sentenceHint');
-  const sentenceIcon = document.querySelector('.sentenceIcon');
-
-  showHintButton.onclick = () => {
-    toggleElementDisplay(buttonGroup1);
-    toggleElementDisplay(buttonGroup2);
-    sentenceHint.style.visibility = 'visible';
-    sentenceIcon.dispatchEvent(new MouseEvent('click'));
-  };
-
-  function toggleElementDisplay(e) {
-    const visibility = !e.style.display;
-    if (visibility) e.style.display = 'none';
-    else if (!visibility) e.style.display = '';
-    else console.error('Unknown error.');
-  };
-
-  // Count
-  const newCardCount = document.querySelector('#newCardCount');
-  const learnCardCount = document.querySelector('#learnCardCount');
-  const ETA = document.querySelector('#ETA');
-
-  newCardCount.innerText = AnkiDroidJS.ankiGetNewCardCount();
-  learnCardCount.innerText = AnkiDroidJS.ankiGetRevCardCount();
-  ETA.innerText = AnkiDroidJS.ankiGetETA() + 'min';
 })(window.AnkiDroidJS)
