@@ -16,9 +16,11 @@ if (isDev) mockAnkidroid();
 
   const status = parseInt(Persistence.getItem(), 10);
   const nextButton = document.querySelector('#nextButton');
-  const wrongButton = document.querySelector('#wrongButton');
   nextButton.onclick = () => answers[status]();
-  wrongButton.onclick = () => answers[1]();
+
+  const wrongButton = document.querySelector('#wrongButton');
+  if (status !== 1) wrongButton.onclick = () => answers[1]();
+  else if (status === 1) wrongButton.style.display = 'none';
 
   async function initAudio() {
     const MIN_DURATION = 1000;
