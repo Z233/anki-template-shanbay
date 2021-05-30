@@ -7,21 +7,6 @@ const isDev = import.meta.env.DEV;
 if (isDev) mockAnkidroid();
 
 (function (AnkiDroidJS) {
-  const answers = {
-    4: () => buttonAnswerEase4(),
-    3: () => buttonAnswerEase3(),
-    2: () => buttonAnswerEase2(), 
-    1: () => buttonAnswerEase1(), 
-  }
-
-  const status = parseInt(Persistence.getItem(), 10);
-  const nextButton = document.querySelector('#nextButton');
-  nextButton.onclick = () => answers[status]();
-
-  const wrongButton = document.querySelector('#wrongButton');
-  if (status !== 1) wrongButton.onclick = () => answers[1]();
-  else if (status === 1) wrongButton.style.display = 'none';
-
   async function initAudio() {
     const MIN_DURATION = 1000;
 
@@ -117,4 +102,60 @@ if (isDev) mockAnkidroid();
     sentIconAnimation.setDuration(await getAudioDuration(sentenceAudio.audioElement));
   }
   initAudio();
+
+  const status = parseInt(Persistence.getItem(), 10);
+
+  const Dots = function() {
+    const DOT_NUM = 3;
+    const CLASSES = ['w-1.5', 'h-1.5', 'inline-block', 'rounded-full'];
+    const dotsWrap = document.createElement('div');
+    dotsWrap.classList.add('space-x-1');
+    const dot = document.createElement('span');
+    dot.classList.add(...CLASSES);
+    this.dots = [].concat(new Array(DOT_NUM).fill('').map(o => dot.cloneNode()));
+    dotsWrap.append(...this.dots);
+    this.dom = dotsWrap;
+  }
+
+  Dots.prototype.setColor = function(color) {
+    this.dots.forEach(e => e.classList.add('bg-' + color));
+  }
+
+  const dots = new Dots();
+  const dotsWrap = document.querySelector('#dotsWrap');
+  dotsWrap.append(dots.dom);
+
+  const answers = {
+    4: {
+      fn: () => buttonAnswerEase4(),
+      color: 'green-400'
+    },
+    3: {
+      fn: () => buttonAnswerEase3(),
+      color: 'primary'
+    },
+    2: {
+      fn: () => buttonAnswerEase2(),
+      color: 'secondly'
+    }, 
+    1: {
+      fn: () => buttonAnswerEase1(),
+      color: 'red-700'
+    } 
+  }
+
+  const nextButton = document.querySelector('#nextButton');
+  nextButton.onclick = () => next(status);
+
+  const wrongButton = document.querySelector('#wrongButton');
+  if (status !== 1) wrongButton.onclick = () => next(1);
+  else if (status === 1) wrongButton.style.display = 'none';
+
+  function next(status) {
+    const answer = answers[status];
+    dots.setColor(answer.color);
+    setTimeout(() => {
+      answer.fn();
+    }, 300);
+  }
 })(window.AnkiDroidJS)

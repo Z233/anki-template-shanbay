@@ -7,10 +7,10 @@ export default function mockAnkidroid() {
   };
 
   AnkiDroidJS.mock('init', () => {});
-  AnkiDroidJS.mock('buttonAnswerEase1', () => { console.log(Persistence.getItem()) });
-  AnkiDroidJS.mock('buttonAnswerEase2', () => { console.log(Persistence.getItem()) });
-  AnkiDroidJS.mock('buttonAnswerEase3', () => { console.log(Persistence.getItem()) });
-  AnkiDroidJS.mock('buttonAnswerEase4', () => { console.log(Persistence.getItem()) });
+  AnkiDroidJS.mock('buttonAnswerEase1', () => { console.log(Persistence.getItem()); window.location = '/front.html'; });
+  AnkiDroidJS.mock('buttonAnswerEase2', () => { console.log(Persistence.getItem()); window.location = '/front.html'; });
+  AnkiDroidJS.mock('buttonAnswerEase3', () => { console.log(Persistence.getItem()); window.location = '/front.html'; });
+  AnkiDroidJS.mock('buttonAnswerEase4', () => { console.log(Persistence.getItem()); window.location = '/front.html'; });
   AnkiDroidJS.mock('ankiGetNewCardCount', () => 20);
   AnkiDroidJS.mock('ankiGetLrnCardCount', () => 100);
   AnkiDroidJS.mock('ankiGetRevCardCount', () => 100);
