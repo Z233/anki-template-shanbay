@@ -22,6 +22,10 @@ button, .cursor-pointer {
   @apply h-full w-full;
 }
 
+[lang=en] {
+  hyphens: auto;
+}
+
 @keyframes play {
   0% {
     visibility: hidden;
