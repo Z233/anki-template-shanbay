@@ -164,6 +164,6 @@ if (isDev) mockAnkidroid();
     dots.setColor(answer.color, answer.darkColor);
     setTimeout(() => {
       answer.fn();
-    }, 300);
+    }, 100);
   }
 })(window.AnkiDroidJS)
