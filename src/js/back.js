@@ -7,6 +7,10 @@ const isDev = import.meta.env.DEV;
 if (isDev) mockAnkidroid();
 
 (function (AnkiDroidJS) {
+
+  const body = document.querySelector('body');
+  if ([...body.classList].some(c => ['night_mode', 'nightMode'].includes(c))) body.classList.add('dark');
+
   async function initAudio() {
     const MIN_DURATION = 1000;
 
@@ -117,8 +121,8 @@ if (isDev) mockAnkidroid();
     this.dom = dotsWrap;
   }
 
-  Dots.prototype.setColor = function(color) {
-    this.dots.forEach(e => e.classList.add('bg-' + color));
+  Dots.prototype.setColor = function(color, darkColor) {
+    this.dots.forEach(e => e.classList.add('bg-' + color, 'dark:bg-' + darkColor));
   }
 
   const dots = new Dots();
@@ -128,19 +132,23 @@ if (isDev) mockAnkidroid();
   const answers = {
     4: {
       fn: () => buttonAnswerEase4(),
-      color: 'green-400'
+      color: 'green-400',
+      darkColor: 'green-800',
     },
     3: {
       fn: () => buttonAnswerEase3(),
-      color: 'primary'
+      color: 'primary',
+      darkColor: 'primary-dark',
     },
     2: {
       fn: () => buttonAnswerEase2(),
-      color: 'secondly'
+      color: 'secondly',
+      darkColor: 'secondly-dark'
     }, 
     1: {
       fn: () => buttonAnswerEase1(),
-      color: 'red-700'
+      color: 'red-700',
+      darkColor: 'red-800'
     } 
   }
 
@@ -153,7 +161,7 @@ if (isDev) mockAnkidroid();
 
   function next(status) {
     const answer = answers[status];
-    dots.setColor(answer.color);
+    dots.setColor(answer.color, answer.darkColor);
     setTimeout(() => {
       answer.fn();
     }, 300);
