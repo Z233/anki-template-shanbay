@@ -6,7 +6,9 @@
 
 ## 🍽 如何食用
 
-下载 apkg 目录下的 anki-template-shanbay.apkg 导入 Anki 即可。
+1. 下载 apkg 目录下的 anki-template-shanbay.apkg 导入 Ankidroid
+2. Ankidroid 中，设置 > 手势操作，启动手势并把所有的动作设为无
+3. Ankidroid 中，设置 > 复习，把全屏显示一项设为隐藏系统状态栏和回答按钮
 
 ## 😪 还没做的
 
