@@ -121,8 +121,8 @@ if (isDev) mockAnkidroid();
     this.dom = dotsWrap;
   }
 
-  Dots.prototype.setColor = function(color, darkColor) {
-    this.dots.forEach(e => e.classList.add('bg-' + color, 'dark:bg-' + darkColor));
+  Dots.prototype.setClass = function(classes) {
+    this.dots.forEach(e => e.classList.add(...classes));
   }
 
   const dots = new Dots();
@@ -132,23 +132,19 @@ if (isDev) mockAnkidroid();
   const answers = {
     4: {
       fn: () => buttonAnswerEase4(),
-      color: 'green-400',
-      darkColor: 'green-800',
+      classes: ['dots-status-4'],
     },
     3: {
       fn: () => buttonAnswerEase3(),
-      color: 'primary',
-      darkColor: 'primary-dark',
+      classes: ['dots-status-3']
     },
     2: {
       fn: () => buttonAnswerEase2(),
-      color: 'secondly',
-      darkColor: 'secondly-dark'
+      classes: ['dots-status-2']
     }, 
     1: {
       fn: () => buttonAnswerEase1(),
-      color: 'red-700',
-      darkColor: 'red-800'
+      classes: ['dots-status-1']
     } 
   }
 
@@ -161,7 +157,7 @@ if (isDev) mockAnkidroid();
 
   function next(status) {
     const answer = answers[status];
-    dots.setColor(answer.color, answer.darkColor);
+    dots.setClass(answer.classes);
     setTimeout(() => {
       answer.fn();
     }, 100);

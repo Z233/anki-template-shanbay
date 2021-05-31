@@ -26,6 +26,22 @@ button, .cursor-pointer {
   hyphens: auto;
 }
 
+.dots-status-4 {
+  @apply bg-green-400 dark:bg-green-800;
+}
+
+.dots-status-3 {
+  @apply bg-primary dark:bg-primary-dark;
+}
+
+.dots-status-2 {
+  @apply bg-secondly dark:bg-secondly-dark;
+}
+
+.dots-status-1 {
+  @apply bg-red-600 dark:bg-red-800;
+}
+
 @keyframes play {
   0% {
     visibility: hidden;
