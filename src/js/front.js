@@ -137,12 +137,21 @@ if (isDev) mockAnkidroid();
   const sentenceHint = document.querySelector('#sentenceHint');
   const sentenceIcon = document.querySelector('.sentenceIcon');
 
-  showHintButton.onclick = () => {
-    toggleElementDisplay(buttonGroup1);
-    toggleElementDisplay(buttonGroup2);
-    sentenceHint.style.visibility = 'visible';
-    sentenceIcon.dispatchEvent(new MouseEvent('click'));
-  };
+  const hasSentenceHint = document.querySelector('p[lang=en]').innerHTML.trim() !== '';
+  if (hasSentenceHint) {
+    showHintButton.onclick = () => {
+      toggleElementDisplay(buttonGroup1);
+      toggleElementDisplay(buttonGroup2);
+      sentenceHint.style.visibility = 'visible';
+      sentenceIcon.dispatchEvent(new MouseEvent('click'));
+    };
+  } else {
+    showHintButton.innerText = '不认识';
+    showHintButton.onclick = () => {
+      Persistence.setItem(1);
+      showAnswer();
+    }
+  }
 
   function toggleElementDisplay(e) {
     const visibility = !e.style.display;
