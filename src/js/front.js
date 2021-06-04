@@ -8,9 +8,6 @@ if (isDev) mockAnkidroid();
 
 (function (AnkiDroidJS) {
 
-  const body = document.querySelector('body');
-  if ([...body.classList].some(c => ['night_mode', 'nightMode'].includes(c))) body.classList.add('dark');
-
   // Init Ankidroid Javascript API
   AnkiDroidJS.init(JSON.stringify({
     "version": "0.0.1",

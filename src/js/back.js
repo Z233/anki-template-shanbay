@@ -8,9 +8,6 @@ if (isDev) mockAnkidroid();
 
 (function (AnkiDroidJS) {
 
-  const body = document.querySelector('body');
-  if ([...body.classList].some(c => ['night_mode', 'nightMode'].includes(c))) body.classList.add('dark');
-
   async function initAudio() {
     const MIN_DURATION = 1000;
 
