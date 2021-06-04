@@ -8,7 +8,10 @@ An anki vocabulary template inspired by shanbay english vocabulary app. Currentl
 
 ## ⭐️ Features
 
-- Custom Answer
+- Custom Answer Button
+- Learning Status
+- Sentence Hint
+- Night mode support
  
 ## 🍽 Usage
 
