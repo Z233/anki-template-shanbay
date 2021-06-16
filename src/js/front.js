@@ -110,6 +110,19 @@ if (isDev) mockAnkidroid();
   }
   initAudio();
 
+  const timer = document.querySelector('#timer');
+  const DURATION = 10000;
+  let start;
+
+  function step(timestamp) {
+    if (start === undefined) start = timestamp;
+    const elapsed = timestamp - start;
+    timer.style.width = Math.min(100 / DURATION * elapsed, 100) + '%';
+    if (elapsed < DURATION) window.requestAnimationFrame(step);
+  }
+
+  window.requestAnimationFrame(step);
+
   // Answer Button
   const answerButtons = document.querySelectorAll('.answerButton');
 
