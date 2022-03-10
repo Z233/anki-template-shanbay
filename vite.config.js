@@ -7,6 +7,8 @@ const NODE_ENV = process.env.NODE_ENV;
 
 export default defineConfig({
   root: 'src',
+  base: '/',
+  publicDir: 'public',
   plugins: [
     viteSingleFile(), 
     minifyHtml(),
