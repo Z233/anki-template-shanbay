@@ -12,7 +12,11 @@ export default defineConfig({
     minifyHtml(),
     injectHtml({
       injectData: {
-        head: NODE_ENV === 'production' ? '' :
+        head: NODE_ENV === 'production' ? `
+        <script>
+          const body = document.querySelector('body');
+          if ([...body.classList].some(c => ['night_mode', 'nightMode'].includes(c))) body.classList.add('dark');
+        </script>` :
         `<meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">`
       }
