@@ -93,7 +93,7 @@ if (isDev) mockAnkidroid();
       });
     };
 
-    // Pronouce Audio
+    // Pronounce Audio
     const playPronounceButton = document.querySelector('#playPronounceButton');
     const pronounceAudio = new AudioCommand('.pronAudioWarp', pronIconAnimation);
     pronounceAudio.init();
@@ -103,7 +103,7 @@ if (isDev) mockAnkidroid();
 
     // Sentence Audio
     const sentenceIcon = document.querySelector('.sentenceIcon');
-    const sentenceAudio = new AudioCommand('.sentenAudioWarp', sentIconAnimation);
+    const sentenceAudio = new AudioCommand('.sentenceAudioWarp', sentIconAnimation);
     sentenceAudio.init();
     setPlayCommand(sentenceIcon, sentenceAudio);
     sentIconAnimation.setDuration(await getAudioDuration(sentenceAudio.audioElement));
@@ -149,11 +149,12 @@ if (isDev) mockAnkidroid();
 
   const hasSentenceHint = document.querySelector('p[lang=en]').innerHTML.trim() !== '';
   if (hasSentenceHint) {
-    showHintButton.onclick = () => {
+    showHintButton.onclick = (e) => {
       toggleElementDisplay(buttonGroup1);
       toggleElementDisplay(buttonGroup2);
       sentenceHint.style.visibility = 'visible';
-      sentenceIcon.dispatchEvent(new MouseEvent('click'));
+      // sentenceIcon.dispatchEvent(new MouseEvent('click'));
+      sentenceAudio.play()
     };
   } else {
     showHintButton.innerText = '不认识';

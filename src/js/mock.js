@@ -20,7 +20,7 @@ export default function mockAnkidroid() {
   window.showAnswer = () => window.location = '/back.html';
 
   createFakeElement('.pronAudioWarp', 'a', './audio/hello.mp3', 'replaybutton');
-  createFakeElement('.sentenAudioWarp', 'a', './audio/sentence.mp3', 'replaybutton');
+  createFakeElement('.sentenceAudioWarp', 'a', './audio/sentence.mp3', 'replaybutton');
 
   function createFakeElement(selector, tag, href, ...classes) {
     const wrap = document.querySelector(selector);
