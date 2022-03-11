@@ -9,100 +9,127 @@ if (isDev) mockAnkidroid();
 (function (AnkiDroidJS) {
 
   async function initAudio() {
-    const MIN_DURATION = 1000;
+    const MIN_DURATION = 1000
 
     const AudioIconAnimation = function (selector) {
-      this.icon = document.querySelector(selector);
-      this.volume1 = this.icon.querySelector('.volume-1');
-      this.volume2 = this.icon.querySelector('.volume-2');
-      this.animations = [];
-      this.start = -1;
-      this.duration = 0;
+      this.icon = document.querySelector(selector)
+      this.volume1 = this.icon.querySelector('.volume-1')
+      this.volume2 = this.icon.querySelector('.volume-2')
+      this.animations = []
+      this.start = -1
+      this.duration = 0
     }
 
     AudioIconAnimation.prototype.setDuration = function (duration) {
-      this.duration = duration;
+      this.duration = duration
     }
 
     AudioIconAnimation.prototype.play = function () {
-      this.start = Date.now();
-      this.volume1.style.animation = `play 0.4s steps(4, end) infinite`;
-      this.volume2.style.animation = `play 0.4s steps(2, end) infinite`;
+      this.start = Date.now()
+      this.volume1.style.animation = `play 0.4s steps(4, end) infinite`
+      this.volume2.style.animation = `play 0.4s steps(2, end) infinite`
       setTimeout(() => {
-        this.stop();
-      }, this.duration * 1000);
+        this.stop()
+      }, this.duration * 1000)
     }
 
     AudioIconAnimation.prototype.stop = function () {
-      const now = Date.now();
-      const end = this.start + MIN_DURATION;
+      const now = Date.now()
+      const end = this.start + MIN_DURATION
       const stopAnimation = () => {
-        this.volume1.style.animation = '';
-        this.volume2.style.animation = '';
-        this.start = -1;
-      };
+        this.volume1.style.animation = ''
+        this.volume2.style.animation = ''
+        this.start = -1
+      }
 
-      if (now >= end) stopAnimation();
+      if (now >= end) stopAnimation()
       else {
         setTimeout(() => {
-          stopAnimation();
-        }, end - now);
+          stopAnimation()
+        }, end - now)
       }
     }
 
     const AudioCommand = function (wrap, animation) {
-      this.wrap = wrap;
-      this.audioElement = null;
-      this.audioButton = null;
-      this.animation = animation;
+      this.wrap = wrap
+      this.audioElement = null
+      this.audioButton = null
+      this.animation = animation
     }
 
     AudioCommand.prototype.init = function () {
-      this.audioButton = document.querySelectorAll(this.wrap + ' > .replaybutton')[0];
-      this.audioElement = document.createElement('audio');
-      this.audioElement.preload = 'metadata';
-      this.audioElement.src = this.audioButton.href.replace('playsound:', '');
+      this.audioButton = document.querySelectorAll(
+        this.wrap + ' > .replaybutton'
+      )[0]
+      this.audioElement = document.createElement('audio')
+      this.audioElement.preload = 'metadata'
+      this.audioElement.src = this.audioButton.href.replace(
+        'playsound:',
+        ''
+      )
     }
 
-    AudioCommand.prototype.play = function () {
-      if (!isDev) this.audioButton.dispatchEvent(new MouseEvent('click'));
-      if (isDev) this.audioElement.play();
-      this.animation.play();
+    AudioCommand.prototype.play = async function () {
+      if (!isDev)
+        this.audioButton.dispatchEvent(new MouseEvent('click'))
+      if (isDev) this.audioElement.play()
+      this.animation.play()
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve()
+        }, this.animation.duration * 1000)
+      })
     }
 
-    const pronIconAnimation = new AudioIconAnimation('.pronounceIcon');
-    const sentIconAnimation = new AudioIconAnimation('.sentenceIcon');
+    const pronIconAnimation = new AudioIconAnimation('.pronounceIcon')
+    const sentIconAnimation = new AudioIconAnimation('.sentenceIcon')
 
     const setPlayCommand = function (button, command) {
       button.onclick = function () {
-        command.play();
+        command.play()
       }
     }
 
     function getAudioDuration(audioElement) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         audioElement.addEventListener('loadeddata', () => {
-          resolve(audioElement.duration);
-        });
-      });
-    };
+          resolve(audioElement.duration)
+        })
+      })
+    }
 
-    // Pronouce Audio
-    const playPronounceButton = document.querySelector('#playPronounceButton');
-    const pronounceAudio = new AudioCommand('.pronAudioWarp', pronIconAnimation);
-    pronounceAudio.init();
-    setPlayCommand(playPronounceButton, pronounceAudio);
-    pronIconAnimation.setDuration(await getAudioDuration(pronounceAudio.audioElement));
-    pronounceAudio.play();
+    // Pronounce Audio
+    const playPronounceButton = document.querySelector(
+      '#playPronounceButton'
+    )
+    const pronounceAudio = new AudioCommand(
+      '.pronAudioWarp',
+      pronIconAnimation
+    )
+    pronounceAudio.init()
+    setPlayCommand(playPronounceButton, pronounceAudio)
+    const pronounceAudioDuration = await getAudioDuration(pronounceAudio.audioElement)
+    pronIconAnimation.setDuration(pronounceAudioDuration)
 
     // Sentence Audio
-    const sentenceIcon = document.querySelector('.sentenceIcon');
-    const sentenceAudio = new AudioCommand('.sentenAudioWarp', sentIconAnimation);
-    sentenceAudio.init();
-    setPlayCommand(sentenceIcon, sentenceAudio);
-    sentIconAnimation.setDuration(await getAudioDuration(sentenceAudio.audioElement));
+    const sentenceIcon = document.querySelector('.sentenceIcon')
+    const sentenceAudio = new AudioCommand(
+      '.sentenceAudioWarp',
+      sentIconAnimation
+    )
+    sentenceAudio.init()
+    setPlayCommand(sentenceIcon, sentenceAudio)
+    sentIconAnimation.setDuration(
+      await getAudioDuration(sentenceAudio.audioElement)
+    )
+
+
+    return pronounceAudio.play()
   }
-  initAudio();
+  initAudio().then(() => {
+    const sentenceIcon = document.querySelector('.sentenceIcon');
+    sentenceIcon.dispatchEvent(new MouseEvent('click'));
+  });
 
   const status = parseInt(Persistence.getItem(), 10);
 

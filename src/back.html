@@ -1,4 +1,5 @@
 <%- head %>
+<link href="./style.css" rel="stylesheet" />
 <div class="flex flex-col h-full relative items-center bg-white dark:bg-gray-900" id="back">
   <div class="p-4 space-y-2 w-full">
     <div class="flex justify-between items-center">
@@ -30,6 +31,6 @@
     <button id="wrongButton" class="w-full bg-red-600 dark:text-gray-100 dark:bg-red-800 text-white p-3 rounded-full focus:outline-none select-none focus:ring-2">记错了</button>
   </div>
   <audio class="pronAudioWarp">{{发音}}</audio>
-  <audio class="sentenAudioWarp">{{例句音频}}</audio>
+  <audio class="sentenceAudioWarp">{{例句音频}}</audio>
 </div>
 <script type="module" src="./js/back.js"></script>
