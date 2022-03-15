@@ -11,9 +11,12 @@ function inlineSvelte(templateFile, dest) {
       const template = fs.readFileSync(templateFile, 'utf-8')
 
       Object.keys(bundles).forEach(file => {
-        const name = file.slice(0, file.lastIndexOf('.'))
-        const code = template.replace('%%script%%', () => bundles[file].code) 
-        fs.writeFileSync(`${opts.dir}/${name}.html`, code)
+        const ext =  file.slice(file.lastIndexOf('.') + 1)
+        if (ext === 'js') {
+          const name = file.slice(0, file.lastIndexOf('.'))
+          const code = template.replace('%%script%%', () => bundles[file].code) 
+          fs.writeFileSync(`${opts.dir}/${name}.html`, code)
+        }
       })
     },
   }
@@ -40,7 +43,7 @@ export default {
         chunkFileNames: '[name].js',
         entryFileNames: '[name].js',
       },
-      plugins: [inlineSvelte(`./src/template.html`)],
+      plugins: [inlineSvelte(resolve('src', 'template.html'))],
     },
     outDir: '../dist',
   },

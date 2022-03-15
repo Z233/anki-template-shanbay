@@ -10,7 +10,7 @@ const config = defineConfig(
       build: {
         rollupOptions: {
           input: {
-            back: resolve(__dirname + '/src', 'back.js'),
+            back: resolve('src', 'back.js'),
           },
         },
       },

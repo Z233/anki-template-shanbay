@@ -10,7 +10,7 @@ const config = defineConfig(
       build: {
         rollupOptions: {
           input: {
-            front: resolve(__dirname + '/src', 'front.js'),
+            front: resolve('src', 'front.js'),
           },
         },
       },
