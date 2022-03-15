@@ -1,12 +1,8 @@
 const { resolve } = require('path')
 import { svelte } from '@sveltejs/vite-plugin-svelte'
-import { defineConfig } from 'vite'
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
 
 import fs from 'fs'
-import path from 'path'
-
-const NODE_ENV = process.env.NODE_ENV
 
 function inlineSvelte(templateFile, dest) {
   return {
@@ -23,7 +19,7 @@ function inlineSvelte(templateFile, dest) {
   }
 }
 
-export default defineConfig({
+export default {
   root: 'src',
   base: '/',
   publicDir: 'public',
@@ -35,19 +31,17 @@ export default defineConfig({
     minify: 'terser',
     cssCodeSplit: false,
     rollupOptions: {
-      input: {
-        front: resolve(__dirname + '/src', 'front.js'),
-      },
-      inlineDynamicImports: true,
+      // input: {
+      //   front: resolve(__dirname + '/src', 'front.js'),
+      // },
       output: {
         format: 'iife',
         assetFileNames: '[name].[ext]',
-        chunkFileNames: '[name].html',
+        chunkFileNames: '[name].js',
         entryFileNames: '[name].js',
       },
       plugins: [inlineSvelte(`./src/template.html`)],
     },
     outDir: '../dist',
-    emptyOutDir: true,
   },
-})
+}
