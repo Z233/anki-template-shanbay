@@ -2,7 +2,6 @@ const { resolve } = require('path')
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 import { defineConfig } from 'vite'
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
-// import legacy from '@vitejs/plugin-legacy'
 
 import fs from 'fs'
 import path from 'path'
