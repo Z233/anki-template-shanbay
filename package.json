@@ -2,8 +2,8 @@
   "name": "anki-shanbay-template",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build -c front.config.js --emptyOutDir && vite build -c back.config.js",
+    "dev": "vite -c ./config/dev.config.js",
+    "build": "vite build -c ./config/front.config.js --emptyOutDir && vite build -c ./config/back.config.js",
     "serve": "vite preview"
   },
   "devDependencies": {
