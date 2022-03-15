@@ -1,5 +1,5 @@
 
-import Back from "./Back.svelte";
+import Back from "./views/Back.svelte";
 
 const back = new Back({
   target: document.body
