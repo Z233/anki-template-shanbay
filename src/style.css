@@ -42,6 +42,10 @@ button, .cursor-pointer {
   @apply bg-red-600 dark:bg-red-800;
 }
 
+span.highlight {
+  @apply text-primary dark:text-primary-dark;
+}
+
 @keyframes play {
   0% {
     visibility: hidden;

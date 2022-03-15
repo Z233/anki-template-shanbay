@@ -133,6 +133,8 @@ if (isDev) mockAnkidroid();
     return pronounceAudio.play()
   }
   initAudio();
+  
+
 
   const timer = document.querySelector('#timer');
   const DURATION = 10000;
@@ -171,7 +173,14 @@ if (isDev) mockAnkidroid();
   const sentenceHint = document.querySelector('#sentenceHint');
   const sentenceIcon = document.querySelector('.sentenceIcon');
 
-  const hasSentenceHint = document.querySelector('p[lang=en]').innerHTML.trim() !== '';
+
+  const sentenceEnWrap = document.querySelector('#sentence-en')
+  const hasSentenceHint = sentenceEnWrap.innerHTML.trim() !== '';
+  const word = document.querySelector('#word').innerText;
+  const sentenceEn = sentenceEnWrap.innerHTML;
+  const re = new RegExp(word, 'gi');
+  sentenceEnWrap.innerHTML = sentenceEn.replace(re, `<span class="highlight">${word}</span>`)
+
   if (hasSentenceHint) {
     showHintButton.onclick = (e) => {
       toggleElementDisplay(buttonGroup1);

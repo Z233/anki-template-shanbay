@@ -133,6 +133,12 @@ if (isDev) mockAnkidroid();
 
   const status = parseInt(Persistence.getItem(), 10);
 
+  const word = document.querySelector('#word').innerText;
+  const sentenceEnWrap = document.querySelector('#sentence-en')
+  const sentenceEn = sentenceEnWrap.innerText;
+  const re = new RegExp(word, 'gi');
+  sentenceEnWrap.innerHTML = sentenceEn.replace(re, `<span class="highlight">${word}</span>`)
+
   const Dots = function() {
     const DOT_NUM = 3;
     const CLASSES = ['w-1.5', 'h-1.5', 'inline-block', 'rounded-full'];
