@@ -1,43 +1,54 @@
-const { resolve } = require('path');
-import { defineConfig } from 'vite';
-import { viteSingleFile } from "vite-plugin-singlefile";
-import { injectHtml, minifyHtml } from 'vite-plugin-html';
+const { resolve } = require('path')
+import { svelte } from '@sveltejs/vite-plugin-svelte'
+import { defineConfig } from 'vite'
+import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
+// import legacy from '@vitejs/plugin-legacy'
 
-const NODE_ENV = process.env.NODE_ENV;
+import fs from 'fs'
+import path from 'path'
+
+const NODE_ENV = process.env.NODE_ENV
+
+function inlineSvelte(templateFile, dest) {
+  return {
+    name: 'Svelte Inliner',
+    generateBundle(opts, bundles) {
+      const template = fs.readFileSync(templateFile, 'utf-8')
+
+      Object.keys(bundles).forEach(file => {
+        const name = file.slice(0, file.lastIndexOf('.'))
+        const code = template.replace('%%script%%', () => bundles[file].code) 
+        fs.writeFileSync(`${opts.dir}/${name}.html`, code)
+      })
+    },
+  }
+}
 
 export default defineConfig({
   root: 'src',
   base: '/',
   publicDir: 'public',
   plugins: [
-    viteSingleFile(), 
-    minifyHtml(),
-    injectHtml({
-      injectData: {
-        head: NODE_ENV === 'production' ? `
-        <script>
-          const body = document.querySelector('body');
-          if ([...body.classList].some(c => ['night_mode', 'nightMode'].includes(c))) body.classList.add('dark');
-        </script>` :
-        `<meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">`
-      }
-    })
+    svelte(),
+    viteCommonjs(),
   ],
   build: {
-    target: "esnext",
+    minify: 'terser',
     cssCodeSplit: false,
-    assetsInlineLimit: 100000000,
-    chunkSizeWarningLimit: 100000000,
-    brotliSize: false,
     rollupOptions: {
       input: {
-        front: resolve(__dirname + '/src', 'front.html'),
-        back: resolve(__dirname + '/src', 'back.html'),
+        front: resolve(__dirname + '/src', 'front.js'),
       },
       inlineDynamicImports: true,
+      output: {
+        format: 'iife',
+        assetFileNames: '[name].[ext]',
+        chunkFileNames: '[name].html',
+        entryFileNames: '[name].js',
+      },
+      plugins: [inlineSvelte(`./src/template.html`)],
     },
     outDir: '../dist',
-    emptyOutDir: true
-  }
+    emptyOutDir: true,
+  },
 })

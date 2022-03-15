@@ -1,5 +1,3 @@
-<%- head %>
-<link href="./style.css" rel="stylesheet" />
 <div class="flex flex-col h-full relative items-center bg-white dark:bg-gray-900" id="back">
   <div class="p-4 space-y-2 w-full">
     <div class="flex justify-between items-center">
@@ -33,4 +31,3 @@
   <audio class="pronAudioWarp">{{发音}}</audio>
   <audio class="sentenceAudioWarp">{{例句音频}}</audio>
 </div>
-<script type="module" src="./js/back.js"></script>
