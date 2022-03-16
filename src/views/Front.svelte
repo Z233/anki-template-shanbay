@@ -14,7 +14,12 @@
   let pronAudio = null
   let sentenceAudio = null
 
-  function showHint() {
+  function handleShowAnswer(state) {
+    setState(state)
+    window.showAnswer()
+  }
+
+  function handleHintClick() {
     hintVisible = true
     sentenceAudio.play()
   }
@@ -103,7 +108,9 @@
       <div
         class="px-4"
         id="sentenceHint"
-        style={`visibility: ${hintVisible ? 'visibility' : 'hidden'};`}
+        style={`visibility: ${
+          hintVisible ? 'visibility' : 'hidden'
+        };`}
       >
         <div
           class="flex space-x-3 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"
@@ -120,8 +127,9 @@
             </p>
           </div>
           <div
-          on:click={() => sentenceAudio.play()} 
-          class="relative top-0.5">
+            on:click={() => sentenceAudio.play()}
+            class="relative top-0.5"
+          >
             <AudioIcon
               bind:this={sentenceAudio}
               targetSelector=".sentenceAudioWrap .replaybutton"
@@ -134,21 +142,28 @@
     <div class="w-full px-12 pb-6">
       <div class="flex flex-col space-y-3">
         {#if !hintVisible}
-          <BaseButton type="primary">我认识</BaseButton>
           <BaseButton
-            on:click={showHint}
-            id="showHintButton"
-            type="secondly">提示一下</BaseButton
+            on:click={() => handleShowAnswer(3)}
+            type="primary">我认识</BaseButton
+          >
+          <BaseButton on:click={handleHintClick} type="secondly"
+            >提示一下</BaseButton
           >
         {:else}
-          <BaseButton type="primary">想起来了</BaseButton>
-          <BaseButton type="secondly">没想起来</BaseButton>
+          <BaseButton
+            on:click={() => handleShowAnswer(2)}
+            type="primary">想起来了</BaseButton
+          >
+          <BaseButton
+            on:click={() => handleShowAnswer(1)}
+            type="secondly">没想起来</BaseButton
+          >
         {/if}
       </div>
     </div>
     <div
-      data-status="4"
-      class="answerButton cursor-pointer bg-gray-100 dark:bg-gray-800 dark:text-gray-500 absolute right-0 top-6 flex p-2 rounded-l-full text-gray-300 text-sm"
+      on:click={() => handleShowAnswer(4)}
+      class="cursor-pointer bg-gray-100 dark:bg-gray-800 dark:text-gray-500 absolute right-0 top-6 flex p-2 rounded-l-full text-gray-300 text-sm"
     >
       <span
         ><svg
