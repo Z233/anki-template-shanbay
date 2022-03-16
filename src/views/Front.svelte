@@ -5,13 +5,22 @@
   import BaseButton from '../components/BaseButton.svelte'
 
   import { onMount } from 'svelte'
-  import { mockAnkidroid } from '../utils/mock'
-  import { loadPersistence } from '../utils/persistence'
-  import { initAudio } from '../utils/audio'
+  import { initAnkiDroid } from '../utils/ankiDroid'
+  import { isDev } from '../utils/helper'
 
-  const isDev = process.env.NODE_ENV === 'development'
+  let hintVisible = false
+  let pronAudio = null
+  let sentenceAudio = null
 
-  let showHint = false
+  function handleShowAnswer(state) {
+    setState(state)
+    window.showAnswer()
+  }
+
+  function handleHintClick() {
+    hintVisible = true
+    sentenceAudio.play()
+  }
 
   // state: easy: 4, good: 3, hard: 2, bad: 1
   function setState(state) {
@@ -20,16 +29,8 @@
   }
 
   onMount(() => {
-    isDev && mockAnkidroid()
-    loadPersistence()
-
-    // Init Ankidroid Javascript API
-    AnkiDroidJS.init(
-      JSON.stringify({
-        version: '0.0.1',
-        developer: 'dev@mail.com',
-      })
-    )
+    initAnkiDroid()
+    pronAudio.play()
   })
 </script>
 
@@ -37,7 +38,7 @@
   <DummyAudio />
 {/if}
 
-<svelte:window on:DOMContentLoaded={initAudio} />
+<!-- <svelte:window on:DOMContentLoaded={initAudio} /> -->
 
 <div
   class="flex flex-col items-center bg-white dark:bg-gray-900"
@@ -80,10 +81,13 @@
         {@html '{{单词}}'}
       </div>
       <div
-        id="playPronounceButton"
+        on:click={() => pronAudio.play()}
         class="cursor-pointer flex items-center justify-center space-x-2"
       >
-        <AudioIcon className="pronounceIcon" />
+        <AudioIcon
+          bind:this={pronAudio}
+          targetSelector=".pronAudioWrap .replaybutton"
+        />
         <span class="text-gray-400 dark:text-gray-100"
           >{@html '{{音标}}'}</span
         >
@@ -91,7 +95,9 @@
       <div
         class="px-4"
         id="sentenceHint"
-        style={`visibility: ${showHint ? 'visibility' : 'hidden'};`}
+        style={`visibility: ${
+          hintVisible ? 'visibility' : 'hidden'
+        };`}
       >
         <div
           class="flex space-x-3 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"
@@ -107,30 +113,43 @@
               {@html '{{例句英文}}'}
             </p>
           </div>
-          <div class="relative top-0.5">
-            <AudioIcon className="pronounceIcon" />
+          <div
+            on:click={() => sentenceAudio.play()}
+            class="relative top-0.5"
+          >
+            <AudioIcon
+              bind:this={sentenceAudio}
+              targetSelector=".sentenceAudioWrap .replaybutton"
+            />
           </div>
         </div>
       </div>
     </div>
     <div class="w-full px-12 pb-6">
       <div class="flex flex-col space-y-3">
-        {#if !showHint}
-          <BaseButton type="primary">我认识</BaseButton>
+        {#if !hintVisible}
           <BaseButton
-            on:click={() => (showHint = true)}
-            id="showHintButton"
-            type="secondly">提示一下</BaseButton
+            on:click={() => handleShowAnswer(3)}
+            type="primary">我认识</BaseButton
+          >
+          <BaseButton on:click={handleHintClick} type="secondly"
+            >提示一下</BaseButton
           >
         {:else}
-          <BaseButton type="primary">想起来了</BaseButton>
-          <BaseButton type="secondly">没想起来</BaseButton>
+          <BaseButton
+            on:click={() => handleShowAnswer(2)}
+            type="primary">想起来了</BaseButton
+          >
+          <BaseButton
+            on:click={() => handleShowAnswer(1)}
+            type="secondly">没想起来</BaseButton
+          >
         {/if}
       </div>
     </div>
     <div
-      data-status="4"
-      class="answerButton cursor-pointer bg-gray-100 dark:bg-gray-800 dark:text-gray-500 absolute right-0 top-6 flex p-2 rounded-l-full text-gray-300 text-sm"
+      on:click={() => handleShowAnswer(4)}
+      class="cursor-pointer bg-gray-100 dark:bg-gray-800 dark:text-gray-500 absolute right-0 top-6 flex p-2 rounded-l-full text-gray-300 text-sm"
     >
       <span
         ><svg
