@@ -87,7 +87,6 @@
         <AudioIcon
           bind:this={pronAudio}
           targetSelector=".pronAudioWrap .replaybutton"
-          className="pronounceIcon"
         />
         <span class="text-gray-400 dark:text-gray-100"
           >{@html '{{音标}}'}</span
@@ -121,7 +120,6 @@
             <AudioIcon
               bind:this={sentenceAudio}
               targetSelector=".sentenceAudioWrap .replaybutton"
-              className="pronounceIcon"
             />
           </div>
         </div>
