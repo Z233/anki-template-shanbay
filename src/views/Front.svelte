@@ -5,10 +5,8 @@
   import BaseButton from '../components/BaseButton.svelte'
 
   import { onMount } from 'svelte'
-  import { mockAnkidroid } from '../utils/mock'
-  import { loadPersistence } from '../utils/persistence'
-
-  const isDev = process.env.NODE_ENV === 'development'
+  import { initAnkiDroid } from '../utils/ankiDroid'
+  import { isDev } from '../utils/helper'
 
   let hintVisible = false
   let pronAudio = null
@@ -31,17 +29,7 @@
   }
 
   onMount(() => {
-    isDev && mockAnkidroid()
-    loadPersistence()
-
-    // Init Ankidroid Javascript API
-    AnkiDroidJS.init(
-      JSON.stringify({
-        version: '0.0.1',
-        developer: 'dev@mail.com',
-      })
-    )
-
+    initAnkiDroid()
     pronAudio.play()
   })
 </script>
