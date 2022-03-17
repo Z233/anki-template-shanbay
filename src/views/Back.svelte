@@ -16,19 +16,19 @@
 
   const answerActions = {
     4: {
-      fn: () => AnkiDroidJS.buttonAnswerEase4(),
+      fn: () => buttonAnswerEase4(),
       dotsClassName: 'bg-green-500 dark:bg-green-700',
     },
     3: {
-      fn: () => AnkiDroidJS.buttonAnswerEase3(),
+      fn: () => buttonAnswerEase3(),
       dotsClassName: 'bg-primary dark:bg-primary-dark',
     },
     2: {
-      fn: () => AnkiDroidJS.buttonAnswerEase2(),
+      fn: () => buttonAnswerEase2(),
       dotsClassName: 'bg-secondly dark:bg-secondly-dark',
     },
     1: {
-      fn: () => AnkiDroidJS.buttonAnswerEase1(),
+      fn: () => buttonAnswerEase1(),
       dotsClassName: 'bg-red-500 dark:bg-red-700',
     },
   }
