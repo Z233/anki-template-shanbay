@@ -2,7 +2,7 @@
   import { onMount } from 'svelte'
   import { isDev } from '../utils/helper'
 
-  export let className = ''
+  export let className = 'h-5 w-5'
   // dispatch click event on target element to play sound
   export let targetSelector = ''
 
@@ -22,6 +22,7 @@
     else target.dispatchEvent(new MouseEvent('click'))
     animStart()
     return new Promise((resolve) => {
+      console.log({ duration: duration * 1000 }, 'play')
       setTimeout(() => resolve(), duration * 1000)
     })
   }
@@ -70,19 +71,19 @@
 
   onMount(async () => {
     if (!targetSelector.trim().length) return
-
     target = document.querySelector(targetSelector)
     duration = await getAudioDuration(target.href)
+    console.log({ duration: duration * 1000 }, 'onMount')
   })
 </script>
 
 <span
   on:click
-  class="h-5 w-5 inline-flex items-center text-primary dark:text-primary-dark"
+  class={`${className} inline-flex items-center text-primary dark:text-primary-dark`}
   ><svg
     viewBox="0 0 18 16"
     xmlns="http://www.w3.org/2000/svg"
-    class={`${className} fill-current`}
+    class={`fill-current`}
   >
     <path
       d="M10.3 0.919917C10.8493 3.21298 11.1312 5.56197 11.14 7.91992C11.1539 10.1758 10.8784 12.4242 10.32 14.6099C10.2808 14.7694 10.2093 14.9192 10.11 15.0499C10.0146 15.1734 9.89565 15.2768 9.76004 15.3541C9.62444 15.4313 9.47488 15.4809 9.31998 15.4999H9.16996C8.91031 15.4999 8.6577 15.4157 8.44999 15.2599L4.75998 12.4499C4.71039 12.4409 4.65955 12.4409 4.60996 12.4499H1.96994C1.76621 12.4423 1.56774 12.3832 1.39292 12.2783C1.21809 12.1735 1.07258 12.0261 0.969944 11.8499C0.319087 10.666 -0.00532894 9.33043 0.0299416 7.97991C0.01615 6.54229 0.33802 5.12129 0.969944 3.82992C1.06823 3.62758 1.22185 3.45723 1.413 3.33865C1.60415 3.22006 1.82502 3.15809 2.04996 3.15991H4.66996C4.71894 3.15061 4.76618 3.13376 4.80997 3.10992L8.42997 0.279933C8.57072 0.182777 8.726 0.108523 8.88999 0.0599317C9.2013 -0.00998806 9.52756 0.0437908 9.79996 0.209926C10.053 0.372152 10.2325 0.627 10.3 0.919917V0.919917Z"
