@@ -17,12 +17,14 @@
   // animation
   let start = -1
 
+  let durationPromise = null
+
   export async function play() {
     if (isDev) audioElement.play()
     else target.dispatchEvent(new MouseEvent('click'))
+    await durationPromise
     animStart()
     return new Promise((resolve) => {
-      console.log({ duration: duration * 1000 }, 'play')
       setTimeout(() => resolve(), duration * 1000)
     })
   }
@@ -59,21 +61,24 @@
     audioElement.preload = 'metadata'
     audioElement.src = href.replace('playsound:', '')
 
-    return new Promise((resolve, reject) => {
+    const promise = new Promise((resolve, reject) => {
       audioElement.onloadeddata = () => {
         resolve(audioElement.duration)
       }
       audioElement.onerror = () => {
         reject(0)
       }
-    })
+    }) 
+
+    return promise
   }
 
   onMount(async () => {
     if (!targetSelector.trim().length) return
     target = document.querySelector(targetSelector)
-    duration = await getAudioDuration(target.href)
-    console.log({ duration: duration * 1000 }, 'onMount')
+    durationPromise = getAudioDuration(target.href).then(newDuration => {
+      duration = newDuration
+    })
   })
 </script>
 

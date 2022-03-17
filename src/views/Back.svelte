@@ -1,6 +1,8 @@
 <script>
   import AudioIcon from '../components/AudioIcon.svelte'
   import DummyAudio from '../components/DummyAudio.svelte'
+  import Dots from '../components/Dots.svelte'
+  import BaseButton from '../components/BaseButton.svelte'
 
   import { onMount } from 'svelte'
   import { initAnkiDroid } from '../utils/ankiDroid'
@@ -8,24 +10,54 @@
 
   let pronAudio = null
   let sentenceAudio = null
+  let dotsVisible = false
+  let state = 3
 
-  function handleDOMContentLoaded() {
-    pronAudio.play().then(() => {
-      sentenceAudio.play()
-    })
+  const answerActions = {
+    4: {
+      fn: () => AnkiDroidJS.buttonAnswerEase4(),
+      dotsClassName: 'bg-green-500 dark:bg-green-700',
+    },
+    3: {
+      fn: () => AnkiDroidJS.buttonAnswerEase3(),
+      dotsClassName: 'bg-primary dark:bg-primary-dark',
+    },
+    2: {
+      fn: () => AnkiDroidJS.buttonAnswerEase2(),
+      dotsClassName: 'bg-secondly dark:bg-secondly-dark',
+    },
+    1: {
+      fn: () => AnkiDroidJS.buttonAnswerEase1(),
+      dotsClassName: 'bg-red-500 dark:bg-red-700',
+    },
+  }
 
+  function handleNextCard() {
+    dotsVisible = true
+    setTimeout(() => {
+      answerActions[state].fn()
+    }, 200)
+  }
+
+  function handleWrongAnswer() {
+    state = 1
+    handleNextCard()
   }
 
   onMount(() => {
     initAnkiDroid()
+
+    pronAudio.play().then(() => {
+      sentenceAudio.play()
+    })
+
+    state = +Persistence.getItem()
   })
 </script>
 
 {#if isDev}
   <DummyAudio />
 {/if}
-
-<svelte:window on:DOMContentLoaded={handleDOMContentLoaded} />
 
 <div
   class="flex flex-col h-full relative items-center bg-white dark:bg-gray-900"
@@ -75,18 +107,19 @@
     </div>
   </div>
   <div
-    class="w-full px-12 flex flex-col absolute bottom-6 space-y-3 items-center"
+    class="w-full px-12 flex flex-col absolute bottom-6 
+    space-y-3 items-center"
   >
-    <div id="dotsWrap" class="abolute" />
-    <button
-      id="nextButton"
-      class="w-full bg-primary dark:bg-primary-dark dark:text-gray-100 text-white p-3 rounded-full focus:outline-none select-none focus:ring-2"
-      >下一个</button
+    <Dots className={answerActions[state].dotsClassName} hidden={!dotsVisible} />
+    <BaseButton
+      on:click={handleNextCard}
+      type="primary"
+      className="w-full">下一个</BaseButton
     >
-    <button
-      id="wrongButton"
-      class="w-full bg-red-600 dark:text-gray-100 dark:bg-red-800 text-white p-3 rounded-full focus:outline-none select-none focus:ring-2"
-      >记错了</button
+    <BaseButton
+      on:click={handleWrongAnswer}
+      type="error"
+      className="w-full">记错了</BaseButton
     >
   </div>
 </div>
