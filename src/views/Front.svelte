@@ -1,16 +1,17 @@
 <script>
-  import DummyAudio from '../components/DummyAudio.svelte'
+  import DummyTemplate from '../components/DummyTemplate.svelte'
   import Timer from '../components/Timer.svelte'
   import AudioIcon from '../components/AudioIcon.svelte'
   import BaseButton from '../components/BaseButton.svelte'
 
   import { onMount } from 'svelte'
   import { initAnkiDroid } from '../utils/ankiDroid'
-  import { isDev } from '../utils/helper'
+  import { getFields, isDev } from '../utils/helper'
 
   let hintVisible = false
   let pronAudio = null
   let sentenceAudio = null
+  let card = {}
 
   function handleShowAnswer(state) {
     setState(state)
@@ -30,12 +31,13 @@
 
   onMount(() => {
     initAnkiDroid()
+    card = getFields()
     pronAudio.play()
   })
 </script>
 
 {#if isDev}
-  <DummyAudio />
+  <DummyTemplate />
 {/if}
 
 <!-- <svelte:window on:DOMContentLoaded={initAudio} /> -->
@@ -78,7 +80,7 @@
   >
     <div class="space-y-16">
       <div id="word" class="text-5xl text-center dark:text-gray-100">
-        {@html '{{单词}}'}
+        {@html card.word}
       </div>
       <div
         on:click={() => pronAudio.play()}
@@ -86,10 +88,10 @@
       >
         <AudioIcon
           bind:this={pronAudio}
-          targetSelector=".pronAudioWrap .replaybutton"
+          targetSelector="#pronAudioWrap .replaybutton"
         />
         <span class="text-gray-400 dark:text-gray-100"
-          >{@html '{{音标}}'}</span
+          >{@html card.symbol}</span
         >
       </div>
       <div
@@ -110,7 +112,7 @@
           </div>
           <div class="dark:text-gray-100">
             <p id="sentence-en" lang="en" class="leading-6">
-              {@html '{{例句英文}}'}
+              {@html card.sentenceEn}
             </p>
           </div>
           <div
@@ -119,7 +121,7 @@
           >
             <AudioIcon
               bind:this={sentenceAudio}
-              targetSelector=".sentenceAudioWrap .replaybutton"
+              targetSelector="#sentenceAudioWrap .replaybutton"
             />
           </div>
         </div>

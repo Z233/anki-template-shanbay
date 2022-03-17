@@ -1,17 +1,18 @@
 <script>
   import AudioIcon from '../components/AudioIcon.svelte'
-  import DummyAudio from '../components/DummyAudio.svelte'
+  import DummyAudio from '../components/DummyTemplate.svelte'
   import Dots from '../components/Dots.svelte'
   import BaseButton from '../components/BaseButton.svelte'
 
   import { onMount } from 'svelte'
   import { initAnkiDroid } from '../utils/ankiDroid'
-  import { isDev } from '../utils/helper'
+  import { getFields, isDev } from '../utils/helper'
 
   let pronAudio = null
   let sentenceAudio = null
   let dotsVisible = false
   let state = 3
+  let card = {}
 
   const answerActions = {
     4: {
@@ -47,6 +48,8 @@
   onMount(() => {
     initAnkiDroid()
 
+    card = getFields()
+
     pronAudio.play().then(() => {
       sentenceAudio.play()
     })
@@ -68,22 +71,22 @@
       <div class="space-y-1 w-full">
         <div class="text-5xl flex justify-between">
           <span id="word" class="w-11/12 dark:text-gray-100"
-            >{@html '{{单词}}'}</span
+            >{@html card.word}</span
           >
           <AudioIcon
             on:click={() => pronAudio.play()}
             bind:this={pronAudio}
             className="w-1/12"
-            targetSelector=".pronAudioWrap .replaybutton"
+            targetSelector="#pronAudioWrap .replaybutton"
           />
         </div>
         <div class="text-gray-400 dark:text-gray-300">
-          {@html '{{音标}}'}
+          {@html card.symbol}
         </div>
       </div>
     </div>
     <div class="leading-8 dark:text-gray-100">
-      {@html '{{释义}}'}
+      {@html card.definition}
     </div>
     <div class="w-full h-0.5 bg-gray-200 dark:bg-gray-700" />
     <div class="flex items-center justify-between">
@@ -93,16 +96,16 @@
       >
       <AudioIcon
         bind:this={sentenceAudio}
-        targetSelector=".sentenceAudioWrap .replaybutton"
+        targetSelector="#sentenceAudioWrap .replaybutton"
         className="w-6 h-6"
       />
     </div>
     <div class="leading-6">
       <p lang="en" id="sentence-en" class="dark:text-gray-100">
-        {@html '{{例句英文}}'}
+        {@html card.sentenceEn}
       </p>
       <p class="text-gray-400 mt-1 dark:text-gray-300">
-        {@html '{{例句中文}}'}
+        {@html card.sentenceCn}
       </p>
     </div>
   </div>
