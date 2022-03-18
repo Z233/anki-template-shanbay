@@ -1,44 +1,37 @@
 <script>
-  import DummyTemplate from '../components/DummyTemplate.svelte'
-  import Timer from '../components/Timer.svelte'
   import AudioIcon from '../components/AudioIcon.svelte'
   import BaseButton from '../components/BaseButton.svelte'
 
-  import { onMount } from 'svelte'
-  import { initAnkiDroid } from '../utils/ankiDroid'
-  import { getFields, isDev } from '../utils/helper'
+  import { onMount, setContext, getContext } from 'svelte'
+
+  const { cardStore, showAnswer } = getContext('card')
+  const [_, setState] = getContext('state')
+
+  let card = {}
+  cardStore.subscribe(value => {
+    card = value
+  })
 
   let hintVisible = false
   let pronAudio = null
   let sentenceAudio = null
-  let card = {}
 
   function handleShowAnswer(state) {
     setState(state)
-    window.showAnswer()
+    showAnswer()
   }
 
   function handleHintClick() {
+    setState(2)
     hintVisible = true
     sentenceAudio.play()
   }
 
-  // state: easy: 4, good: 3, hard: 2, bad: 1
-  function setState(state) {
-    if (!Persistence.isAvailable) return
-    Persistence.setItem(state)
-  }
-
   onMount(() => {
-    initAnkiDroid()
-    card = getFields()
     pronAudio.play()
   })
 </script>
 
-{#if isDev}
-  <DummyTemplate />
-{/if}
 
 <!-- <svelte:window on:DOMContentLoaded={initAudio} /> -->
 
@@ -73,7 +66,6 @@
         </div>
       </div>
     </div>
-    <Timer />
   </div>
   <div
     class="flex-grow flex flex-col justify-between pt-28 relative w-full"
