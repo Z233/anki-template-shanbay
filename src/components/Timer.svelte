@@ -1,4 +1,6 @@
 <script>
+  import { onMount } from 'svelte'
+
   let timer = null
   let start = null
   const DURATION = 10000
@@ -10,11 +12,12 @@
       Math.min((100 / DURATION) * elapsed, 100) + '%'
     if (elapsed < DURATION) window.requestAnimationFrame(step)
   }
-</script>
 
-<svelte:window
-  on:DOMContentLoaded={() => window.requestAnimationFrame(step)}
-/>
+  onMount(() => {
+    window.requestAnimationFrame(step)
+  })
+
+</script>
 
 <div class="w-full h-1 bg-gray-200 dark:bg-gray-700">
   <div
