@@ -4,6 +4,8 @@
   "scripts": {
     "dev": "vite -c ./config/dev.config.js",
     "build": "vite build -c ./config/front.config.js --emptyOutDir && vite build -c ./config/back.config.js",
+    "build:front": "vite build -c ./config/front.config.js",
+    "build:back": "vite build -c ./config/back.config.js",
     "serve": "vite preview"
   },
   "devDependencies": {
