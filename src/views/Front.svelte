@@ -3,6 +3,7 @@
   import Timer from '../components/Timer.svelte'
   import AudioIcon from '../components/AudioIcon.svelte'
   import BaseButton from '../components/BaseButton.svelte'
+  import Count from '../components/Count.svelte'
 
   import { onMount } from 'svelte'
   import { initAnkiDroid } from '../utils/ankiDroid'
@@ -40,39 +41,12 @@
   <DummyTemplate />
 {/if}
 
-<!-- <svelte:window on:DOMContentLoaded={initAudio} /> -->
-
 <div
   class="flex flex-col items-center bg-white dark:bg-gray-900"
   id="front"
 >
   <div class="w-full">
-    <div class="w-full flex justify-around text-center p-3">
-      <div>
-        <div class="text-gray-400 dark:text-gray-300">待学习</div>
-        <div
-          class="text-gray-600 dark:text-gray-300"
-          id="newCardCount"
-        >
-          0
-        </div>
-      </div>
-      <div>
-        <div class="text-gray-400 dark:text-gray-300">待复习</div>
-        <div
-          class="text-gray-600 dark:text-gray-300"
-          id="learnCardCount"
-        >
-          0
-        </div>
-      </div>
-      <div>
-        <div class="text-gray-400 dark:text-gray-300">剩余时间</div>
-        <div class="text-gray-600 dark:text-gray-300" id="ETA">
-          0min
-        </div>
-      </div>
-    </div>
+    <Count />
     <Timer />
   </div>
   <div
