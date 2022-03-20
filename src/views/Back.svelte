@@ -1,66 +1,54 @@
 <script>
   import AudioIcon from '../components/AudioIcon.svelte'
-  import DummyAudio from '../components/DummyTemplate.svelte'
   import Dots from '../components/Dots.svelte'
   import BaseButton from '../components/BaseButton.svelte'
 
-  import { onMount } from 'svelte'
-  import { initAnkiDroid } from '../utils/ankiDroid'
-  import { getFields, isDev } from '../utils/helper'
+  import { onMount, getContext } from 'svelte'
+  import { get } from 'svelte/store'
+
+  const {
+    cardStore,
+    nextCard,
+  } = getContext('card')
+
+  const [getState, setState] = getContext('state')
+
+  const card = get(cardStore)
 
   let pronAudio = null
   let sentenceAudio = null
-  let dotsVisible = false
-  let state = 3
-  let card = {}
 
-  const answerActions = {
-    4: {
-      fn: () => buttonAnswerEase4(),
-      dotsClassName: 'bg-green-500 dark:bg-green-700',
-    },
-    3: {
-      fn: () => buttonAnswerEase3(),
-      dotsClassName: 'bg-primary dark:bg-primary-dark',
-    },
-    2: {
-      fn: () => buttonAnswerEase2(),
-      dotsClassName: 'bg-secondly dark:bg-secondly-dark',
-    },
-    1: {
-      fn: () => buttonAnswerEase1(),
-      dotsClassName: 'bg-red-500 dark:bg-red-700',
-    },
+  let dotsVisible = false
+  let dotsClassName = ''
+  
+  const dotsClassNameObj = {
+    4: 'bg-green-500 dark:bg-green-700',
+    3: 'bg-primary dark:bg-primary-dark',
+    2: 'bg-secondly dark:bg-secondly-dark',
+    1: 'bg-red-500 dark:bg-red-700',
   }
 
+
   function handleNextCard() {
+    const state = getState()
+    dotsClassName = dotsClassNameObj[state]
     dotsVisible = true
     setTimeout(() => {
-      answerActions[state].fn()
+      nextCard()
     }, 200)
   }
 
   function handleWrongAnswer() {
-    state = 1
+    setState(1)
     handleNextCard()
   }
 
   onMount(() => {
-    initAnkiDroid()
-
-    card = getFields()
-
     pronAudio.play().then(() => {
       sentenceAudio.play()
     })
-
-    state = +Persistence.getItem()
   })
 </script>
-
-{#if isDev}
-  <DummyAudio />
-{/if}
 
 <div
   class="flex flex-col h-full relative items-center bg-white dark:bg-gray-900"
@@ -113,7 +101,7 @@
     class="w-full px-12 flex flex-col absolute bottom-6 
     space-y-3 items-center"
   >
-    <Dots className={answerActions[state].dotsClassName} hidden={!dotsVisible} />
+    <Dots className={dotsClassName} hidden={!dotsVisible} />
     <BaseButton
       on:click={handleNextCard}
       type="primary"
